@@ -1,0 +1,57 @@
+{
+ "properties": {
+  "policyType": "Custom",
+  "mode": "All",
+  "description": "This policy will deny the creation of VMs and VMSSs that do not use naged disks",
+  "metadata": {
+   "createdBy": "6a1b6455-0c42-440a-8738-b2655334a484",
+   "createdOn": "2022-10-30T09:40:20.9546967Z",
+   "updatedBy": null,
+   "updatedOn": null
+  },
+  "policyRule": {
+   "if": {
+    "anyOf": [
+     {
+      "allOf": [
+       {
+        "field": "type",
+        "equals": "Microsoft.Compute/virtualMachines"
+       },
+       {
+        "field": "Microsoft.Compute/virtualMachines/osDisk.uri",
+        "exists": "True"
+       }
+      ]
+     },
+     {
+      "allOf": [
+       {
+        "field": "type",
+        "equals": "Microsoft.Compute/VirtualMachineScaleSets"
+       },
+       {
+        "anyOf": [
+         {
+          "field": "Microsoft.Compute/VirtualMachineScaleSets/osDisk.vhdContainers",
+          "exists": "True"
+         },
+         {
+          "field": "Microsoft.Compute/VirtualMachineScaleSets/osdisk.imageUrl",
+          "exists": "True"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "effect": "deny"
+   }
+  }
+ },
+ "id": "/subscriptions/1fb0a914-f51f-41bb-872e-bc7f018302b9/providers/Microsoft.Authorization/policyDefinitions/DenyUnmanagedDisks",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "DenyUnmanagedDisks"
+}
